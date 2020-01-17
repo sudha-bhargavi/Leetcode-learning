@@ -1,0 +1,74 @@
+Question : https://leetcode.com/problems/encode-and-decode-tinyurl/
+
+Approach 1:
+
+Hashcode can be used to generate the unique number each time. Here the idea is to generate the hashcode of the input string 
+and store it in hashmap where key as input url and value as tiny url appened with generated hashcode.
+
+public class Codec {
+    Map<String,String> map = new HashMap();
+    
+    // Encodes a URL to a shortened URL.
+    public String encode(String longUrl) {
+        String tinyUrl = "http://tinyurl.com/"+longUrl.hashCode();
+        map.put(longUrl,tinyUrl);
+        map.put(tinyUrl,longUrl);
+        return tinyUrl;
+    }
+
+    // Decodes a shortened URL to its original URL.
+    public String decode(String shortUrl) {
+        if (map.containsKey(shortUrl)){
+            return map.get(shortUrl);
+        }
+        else{
+            return null;
+        }
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(url));
+
+
+Approch 2:
+
+The disadvantage of approach 1 is "two strings can have same hashcodes". 
+To avoid collision, we can have fixed length of string which contains alphabets and numbers.Using Math.random() method,
+can generate the number which can be used to get the character from above fixed character.
+
+public class Codec {
+    Map<String,String> map = new HashMap();
+    private String baseUrl =  "http://tinyurl.com/";
+    private String s = "abcdefghijklmnopqrstuvwxyzGHIJKLMNOPQRSTUVWXYZ1234567890";
+    
+    // Encodes a URL to a shortened URL.
+    public String encode(String longUrl) {
+        StringBuilder sb = new StringBuilder();
+        if (map.containsKey(longUrl)) return map.get(longUrl);
+        do{
+           //since the key is length of 6. we will travel 6 times and generate the unique number(from 0 to s.length) each time.  
+           for(int i=0;i<6;i++){
+               int temp = (int)(Math.random() * s.length());
+               sb.append(s.charAt(temp));
+            }
+        }while(map.containsKey(sb.toString()));
+        String key = sb.toString();
+        String tinyUrl = baseUrl + key;
+        //Storing the key as hashmap key to avoid one more hashmap to have mapping from long url to short url and short url to long url.
+        map.put(key,longUrl);
+        return tinyUrl;
+    }
+
+    // Decodes a shortened URL to its original URL.
+    public String decode(String shortUrl) {
+    //Since the hashmap contains only key, not the tiny url
+        String key = shortUrl.substring(19,shortUrl.length());
+        return map.get(key);
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(url));
