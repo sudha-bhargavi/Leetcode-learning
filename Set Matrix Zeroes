@@ -1,0 +1,31 @@
+class Solution {
+//Learnings: Allocate additional sets which will hold the rows and columns of indicies which has 0 value. This will require additional space.
+//This can be done with contant space by assigning the first row and column as 0 for other column and row which holds the 0 value. To keep track for first rows or columns
+ has 0 value, take additional local valriable to hold it. Tranverse the whole array from row 1 indicies and col from 1 indicies. 
+ public void setZeroes(int[][] matrix) {
+        if (matrix == null || matrix.length ==0){
+            return;
+        }
+        Set<Integer> rows = new HashSet<Integer>();
+        Set<Integer> cols = new HashSet<Integer>();
+        for(int i=0;i<matrix.length;i++){
+            for(int j=0;j<matrix[i].length;j++){
+                if (matrix[i][j] ==0){
+                    rows.add(i);
+                    cols.add(j);
+                }
+            }
+        }
+        for(int r : rows){
+            for(int c=0;c<matrix[r].length;c++){
+                matrix[r][c] =0;
+            }
+        }
+        
+        for(int cc : cols){
+            for(int rr=0;rr<matrix.length;rr++){
+                matrix[rr][cc] =0;
+            }
+        }
+    }
+}
