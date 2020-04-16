@@ -1,0 +1,68 @@
+import java.util.*;
+public class TopKItems{
+
+     public static void main(String []args){
+       // System.out.println("Hello World");
+        String[] keywords = {"anacell", "cetracular", "betacellular"};
+        String[] reviews = {
+          "Anacell provides the best services in the city",
+          "betacellular has awesome services",
+          "Best services provided by anacell, everyone should use anacell",
+        };
+        
+    //   String[] keywords = {"anacell", "betacellular", "cetracular", "deltacellular", "eurocell"};
+    //   String[] reviews = {
+    //       "I love anacell Best services; Best services provided by anacell",
+    //       "betacellular has great services",
+    //       "deltacellular provides much better services than betacellular",
+    //       "cetracular is worse than anacell",
+    //       "Betacellular is better than deltacellular.",
+    //     };
+        List<String> res = find(keywords,reviews,2);
+        for(String r:res){
+            System.out.println(r);
+        }
+     }
+     
+     public static List<String> find(String[] keywords,String[] reviews, int k){
+         List<String> result = new ArrayList();
+         Map<String,Integer> mapper = new HashMap(); 
+         for(String kw : keywords){
+             for(String re:reviews){
+                 String[] arr = re.split("\\W");
+                 for(String x :arr){
+                     if (x.toLowerCase().equals(kw)){
+                         mapper.put(kw,mapper.getOrDefault(kw,0)+1);
+                     }
+                 }
+             }
+         }
+         
+         PriorityQueue<String> q = new PriorityQueue(new Comparator<String>(){
+           public int compare(String s1,String s2){
+               int val1 = mapper.get(s1);
+               int val2 = mapper.get(s2);
+               int diff = val1 - val2;
+               if (diff == 0){
+                   return s1.compareTo(s2);
+               }
+               return diff;
+           }  
+     
+         }
+         );
+         for(Map.Entry<String,Integer> entry: mapper.entrySet()){
+             q.add(entry.getKey());
+             if (q.size() > k){
+                 q.remove();
+             }
+         }
+         
+        while(!q.isEmpty()){
+            result.add(q.peek());
+            q.remove();
+        }
+        Collections.reverse(result);
+        return result;
+     }
+}
